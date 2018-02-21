@@ -159,6 +159,12 @@ namespace DroidMapping
 
         public void OnConnectionFailed(ConnectionResult result)
         {
+            if (!result.HasResolution)
+            {
+                GoogleApiAvailability.Instance.GetErrorDialog(this, result.ErrorCode, 0).Show();
+                return;
+            }
+
             if (!resolvingError && result.HasResolution)
             {
                 resolvingError = true;
@@ -180,13 +186,19 @@ namespace DroidMapping
             if (requestCode == ResolvePlayErrorRequestId)
             {
                 resolvingError = false;
-                if (resultCode == Android.App.Result.Canceled)
+                if (resultCode == Android.App.Result.Ok)
                 {
                     if (!apiClient.IsConnecting
                         && !apiClient.IsConnected)
                     {
                         apiClient.Connect();
                     }
+                }
+                else if (resultCode == Android.App.Result.Canceled)
+                {
+                    // Make sure you have enabled Google Plus API access, and added a corresponding OAuth credential, in the Google developer console.
+                    // https://console.developers.google.com/
+                    // Without the API access, user sign-in will loop between a Canceled result and OnConnectionFailed.
                 }
             }
         }
