@@ -181,6 +181,7 @@ namespace DroidMapping
                 }
             }
         }
+
         protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
         {
             if (requestCode == ResolvePlayErrorRequestId)
