@@ -6,7 +6,7 @@ namespace DroidMapping
     public static class BoundingBoxExtensions
     {
         public static LatLngBounds GetBoundingBox(this LatLng point, double radius)
-        {            
+        {
             // Bounding box surrounding the point at given coordinates,
             var lat = Deg2rad(point.Latitude);
             var lon = Deg2rad(point.Longitude);
@@ -49,4 +49,3 @@ namespace DroidMapping
         }
     }
 }
-
