@@ -93,7 +93,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoundingBoxExtensions.cs" />
     <Compile Include="GoogleMapsKey.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MappingPermissionsHelper.cs" />
