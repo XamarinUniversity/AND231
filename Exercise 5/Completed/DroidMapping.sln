@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroidMapping", "DroidMapping\DroidMapping.csproj", "{AC513439-4447-490D-890F-D1F1DC7E7A07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DroidMapping", "DroidMapping\DroidMapping.csproj", "{2BFC2086-0312-44BC-9851-A4F644F088FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,14 +11,17 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AC513439-4447-490D-890F-D1F1DC7E7A07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC513439-4447-490D-890F-D1F1DC7E7A07}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC513439-4447-490D-890F-D1F1DC7E7A07}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{AC513439-4447-490D-890F-D1F1DC7E7A07}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC513439-4447-490D-890F-D1F1DC7E7A07}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC513439-4447-490D-890F-D1F1DC7E7A07}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{2BFC2086-0312-44BC-9851-A4F644F088FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BFC2086-0312-44BC-9851-A4F644F088FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BFC2086-0312-44BC-9851-A4F644F088FF}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2BFC2086-0312-44BC-9851-A4F644F088FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BFC2086-0312-44BC-9851-A4F644F088FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BFC2086-0312-44BC-9851-A4F644F088FF}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F076BF69-4237-4487-AEB0-CB605413C0D1}
 	EndGlobalSection
 EndGlobal
