@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+    <title>Exercise 5: Using Geocoder to perform reverse geocoding</title>
+    <link rel="stylesheet" type="text/css" href="./res/styles/normalize.css">
+    <link rel="stylesheet" type="text/css" href="./res/styles/prettify.css" />
+    <link rel="stylesheet" type="text/css" href="./res/styles/styles.css">
+</head>
+
+<body>
+    <!-- Use the same title as the StartHere -->
+    <header>Location Services</header>
+
+       <section id="main">
+
+        <h1 id="page-title"></h1>
+
+        <h2>Duration</h2>
+        <p>10 minutes</p>
+
+        <!-- - - - - - - - - Goals - - - - - - - - -->
+
+        <h2 id="goals">Exercise goals</h2>
+
+      <p>
+            In this exercise you will look up a street address based on taps on the map surface and display a marker on the map with the address details.
+    </p>
+
+    <p>
+        To complete this exercise, you will perform the following steps:
+    </p>
+
+    <ol>
+      <li>
+        Add a handler for the <code>GoogleMap.MapClick</code> event.
+      </li>
+      <li>
+        In the <code>MapClick</code> handler, you will take the given coordinate and use the <code>Geocoder.GetFromLocationAsync</code> method to retrieve a street address and then display that using an orange marker.
+      </li>
+    </ol>
+
+    <h2>Required Assets</h2>
+    <p>
+    There is a <b>Exercise 5</b> folder included with this exercise which contains a completed project if you'd like to compare your work.
+    </p>
+
+        <!-- - - - - - - - - Steps - - - - - - - - -->
+
+        <h1>Steps</h1>
+        <p>
+    Try to use the above high-level goals to complete the exercise and refer to the below step-by-step instructions to fill in any required details.
+        </p>
+
+    <h2>Look up an Address from a coordinate</h2>
+    <p>
+      Let's start by doing some basic reverse geocoding where we look up an address for a coordinate.
+    </p>
+    <ol>
+      <li>
+        Open the <b>MainActivity.cs</b> file and locate the <code>OnMapReady</code> method.
+      </li>
+      <li>
+        Add an event handler for the <code>GoogleMap.MapClick</code> event at the end of the method. Since we have some non-trivial work to do, it's recommended that you use a regular method as the event handler rather than a lambda. Name the method <b>OnGetDetails</b>.
+      </li>
+
+<p><a href="#" onclick="toggleCode(this,'getDetails');return false;" class="uiitem">Show Code</a>
+<div class="indent-none" id="getDetails" style="display:none;">
+<pre class="prettyprint">
+public void OnMapReady(GoogleMap googleMap)
+{
+  map = googleMap;
+  ...
+  map.MapClick += OnGetDetails;
+}
+
+void OnGetDetails(object sender, GoogleMap.MapClickEventArgs e)
+{
+}
+</pre></div></p>
+
+      <li>
+        In the <b>OnGetDetails</b> method, create a new instance of <code>Android.Locations.Geocoder</code>. You will need to pass a <code>Context</code> into the constructor - you can use the current activity (<code>this</code>).
+      </li>
+      <li>
+        Next, use the Geocoder's <code>GetFromLocationAsync</code> method to return a single result for the passed point in the <code>MapClickedEventArgs</code>
+        <ul class="indent-none">
+          <li>
+            You will need to use <code>async</code> and <code>await</code>. Check the below code hint (highlights) if you need help with this.
+          </li>
+          <li>
+            The coordinate is in the <code>MapClickedEventArgs.Point</code> property - you will need to pass the longitude and latitude as separate values.
+          </li>
+          <li>
+            Ask for a single return result.
+          </li>
+        </ul>
+      </li>
+
+<p><a href="#" onclick="toggleCode(this,'getFromLoc');return false;" class="uiitem">Show Code</a>
+<div class="indent-none" id="getFromLoc" style="display:none;">
+<pre class="prettyprint">
+<span class="highlight">async</span> void OnGetDetails(object sender, GoogleMap.MapClickEventArgs e)
+{
+   Geocoder geocoder = new Geocoder(this);
+   var results = <span class="highlight">await</span> geocoder.GetFromLocationAsync(
+                     e.Point.Latitude, e.Point.Longitude, 1);
+
+}
+</pre></div></p>
+
+      <li>
+        If the method returns a value (check the returning list's count), take the resulting <code>Address</code> object and create a new <code>Marker</code> to display it on the map. Use the code from your <code>OnLocationChanged</code> implementation as a guide.
+          <ul class="indent-none">
+            <li>
+              Save the marker off in a class field and update the values if it is non-null.
+            </li>
+            <li>
+              Use <code>Hue.Orange</code> as the color.
+            </li>
+            <li>
+              Set the <code>Position</code> to the address's latitude and longitude.
+            </li>
+            <li>
+              Set the <code>Title</code> to the <code>FeatureName</code>.
+            </li>
+            <li>
+              Set the <code>Snippet</code> to the full address - here's a quick function to retrieve it into a single string you can just paste into the code:
+
+<pre class="codeblock prettyprint">
+string GetAddress(Address result)
+{
+    var sb = new System.Text.StringBuilder();
+    for (int index = 0; index &lt;= result.MaxAddressLineIndex; index++) {
+        if (sb.Length > 0)
+            sb.Append(", ");
+        sb.Append(result.GetAddressLine(index));
+    }
+    return sb.ToString();
+}</pre>
+            </li>
+          </ul>
+      </li>
+      <li>
+        As a last step, call <code>ShowInfoWindow</code> on the marker to make sure it's visible and we can see the address.
+      </li>
+
+<p><a href="#" onclick="toggleCode(this,'OnGetDetails');return false;" class="uiitem">Show Code</a>
+<div class="indent-none" id="OnGetDetails" style="display:none;">
+<pre class="prettyprint">
+Marker lastGeoMarker;
+
+async void OnGetDetails(object sender, GoogleMap.MapClickEventArgs e)
+{
+    Geocoder geocoder = new Geocoder(this);
+    var results = await geocoder.GetFromLocationAsync(
+                          e.Point.Latitude, e.Point.Longitude, 1);
+    if (results.Count &gt; 0) {
+
+        var result = results[0];
+
+        if (lastGeoMarker == null) {
+            var markerOptions = new MarkerOptions()
+                .SetIcon(BitmapDescriptorFactory.DefaultMarker(
+                              BitmapDescriptorFactory.HueOrange))
+                .SetPosition(new LatLng(result.Latitude, result.Longitude))
+                .SetTitle(result.FeatureName)
+                .SetSnippet(GetAddress(result));
+            lastGeoMarker = map.AddMarker(markerOptions);
+        }
+        else {
+            lastGeoMarker.Position = new LatLng(result.Latitude, result.Longitude);
+            lastGeoMarker.Title = result.FeatureName;
+            lastGeoMarker.Snippet = GetAddress(result);
+        }
+
+        lastGeoMarker.ShowInfoWindow();
+    }
+}
+</pre></div></p>
+
+      <li>
+        Run the application and tap somewhere on the map - it should display the current address as shown below:
+      </li>
+    </ol>
+    <img src="./res/images/lab5-done.png" />
+
+      <!-- - - - - - - - - Summary - - - - - - - - -->
+
+    <h1>Summary</h1>
+    <p>
+        In this exercise, you added support for user map interactions by providing addresses using the built-in reverse-geocoding API whenever the user taps within the map.
+    </p>
+
+        <div class="align-right">
+            <a href="../Start%20Here.html">Go Back</a>
+        </div>
+
+    </section>
+
+    <script src="./res/js/jquery.min.js"></script>
+    <script src="./res/js/prettify.js"></script>
+    <script src="./res/js/script.js"></script>
+
+    <footer>Copyright (C) 2018 Xamarin Inc., Microsoft.</footer>
+</body>
+</html>
