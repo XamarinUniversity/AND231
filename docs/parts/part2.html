@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+    <title>Exercise 2: Working with the Location Manager</title>
+    <link rel="stylesheet" type="text/css" href="./res/styles/normalize.css">
+    <link rel="stylesheet" type="text/css" href="./res/styles/prettify.css" />
+    <link rel="stylesheet" type="text/css" href="./res/styles/styles.css">
+</head>
+
+<body>
+    <!-- Use the same title as the StartHere -->
+    <header>Location Services</header>
+
+       <section id="main">
+
+        <h1 id="page-title"></h1>
+
+        <h2>Duration</h2>
+        <p>10 minutes</p>
+
+        <!-- - - - - - - - - Goals - - - - - - - - -->
+
+        <h2 id="goals">Exercise goals</h2>
+
+        <p>
+            In this exercise you will use the <code>LocationManager</code> to track the current location, using a marker to display it on the map. The marker will be "live" and track with changes made to the location on the device or emulator. If you use the instructions, your display will look something like:
+        </p>
+
+        <img src="./res/images/lab2-completed.PNG" />
+        <p>
+            To complete this exercise, you will perform the following steps:
+        </p>
+
+        <ol>
+        <li>
+            Obtain the <code>LocationManager</code> singleton and register for location updates, passing the activity instance as the handler.
+        </li>
+        <li>
+            Implement the <code>ILocationListener</code> interface on the <code>MainActivity</code>.
+        </li>
+        <li>
+            In the <code>OnLocationChanged</code> override, position the camera to the passed location and add a marker (or move the existing marker).
+        </li>
+
+        </ol>
+
+        <h2>Required Assets</h2>
+        <p>
+        There is a <b>Exercise 2</b> folder included with this exercise which contains a completed project if you'd like to compare your work, or use as a starter for future exercises if you want to explore and deviate from these instructions. Remember you will need to add your Google API key to the <b>GoogleMapsKey.cs</b> file if you want to run this code.
+        </p>
+
+        <!-- - - - - - - - - Steps - - - - - - - - -->
+
+        <h1>Steps</h1>
+            <p>
+        Use the following steps along with the above high-level instructions to complete the exercise.
+            </p>
+
+        <h2>Request Location updates</h2>
+        <p>
+        As a first step, we will access the built-in <code>LocationManager</code> and request location updates.
+        </p>
+        <ol>
+        <li>
+            Open the <b>MainActivity.cs</b> file and locate the <code>OnMapReady</code> method. This is called when the map has been loaded and is ready to be displayed in our fragment. This is where we will request location updates.
+        </li>
+
+        <li>
+            At the end of the method, obtain the <code>LocationManager</code> instance either using <code>GetSystemService</code> or through the wrapper method <code>LocationManager.FromContext</code>. Both require you to pass the current <code>Context</code> - you can just pass the activity instance (<code>this</code>).
+        </li>
+
+        <li>
+            Call the <code>RequestLocationUpdates</code> method to register for location change updates.
+            <ul class="indent-none">
+                <li>Pass <code>LocationManager.GpsProvider</code> as the location provider (1st parameter).</li>
+                <li>Pass "5000" for the <code>minTime</code> value. This is 5 seconds.</li>
+                <li>Pass "100f" for the <code>minDistance</code> value. This is 100 meters.</li>
+                <li>Pass the activity instance (<code>this</code>) as the <code>ILocationListener</code>, we'll implement that in a moment.</li>
+            </ul>
+        </li>
+    </ol>
+
+<p><a href="#" onclick="toggleCode(this,'locUpdates');return false;" class="uiitem">Show Code</a>
+<div class="indent-none" id="locUpdates" style="display:none;">
+<pre class="prettyprint">
+<mark>using Android.Locations;</mark>
+...
+public void OnMapReady(GoogleMap googleMap)
+{
+   ...
+   <mark>LocationManager locManager = LocationManager.FromContext(this);</mark>
+   <mark>locManager.RequestLocationUpdates(LocationManager.GpsProvider, 5000, 100f, this);</mark>
+}
+</pre></div>
+
+    <h2>Implement ILocationListener</h2>
+    <p>
+    Next, let's implement the <code>ILocationListener</code> interface on our activity - we could put this implementation anywhere we like, but the handling activity is the most common place to work with the notification.
+    </p>
+    <ol>
+        <li>
+            Add <code>ILocationListener</code> to the list of interfaces the <code>MainActivity</code> implements. Use the refactoring contextual menu to implement the interface for you (right-click on the interface and select "Implement Interface").
+        </li>
+
+        <li>
+            The only method we will use today is the <code>OnLocationChanged</code> which is the notification method. In that method, we want to reposition our camera to the passed location.
+        </li>
+
+        <li>
+            Since we need to implement the full <code>ILocationListener</code> interface but are not concerned with their execution, make sure you delete any <code>NotImplementedException</code> code in these methods that Visual Studio may have added for us.
+        </li>
+
+        <li>
+            Move the code which changes the camera position to focus on Xamarin HQ from <code>OnMapReady</code> to <code>OnLocationChanged</code>.
+        </li>
+
+        <li>
+            Change the coordinate to be the one found in the passed <code>Location</code> object&mdash;it's two separate <code>double</code> fields, <code>Latitude</code> and <code>Longitude</code>. Fill in a <code>LatLng</code> with these values and use that coordinate to animate the camera.
+        </li>
+
+        <li>
+            Add a new field to the class of type <code>Marker</code>. Name it <b>currentLocationMarker</b>.
+        </li>
+
+        <li>
+            After you have animated the camera position, check the <b>currentLocationMarker</b> field against <code>null</code>. If it's <em>not</em> <code>null</code>, change the <code>Position</code> property to the <code>LatLng</code> you just created.
+        </li>
+
+        <li>
+            If it <em>is</em> <code>null</code>, we need to create a new marker to place on the map and assign the field&mdash;this is the first time through.
+        </li>
+
+        <li> 
+            Create a new <code>MarkerOptions</code> object and use the fluent API to set the following values:
+            <ul class="indent-none">
+                <li>
+                    Use <code>SetIcon</code> to set the marker to be a blue default marker (<code>BitmapDescriptorFactory.DefaultMarker(BitmapDescriptorFactory.HueBlue)</code>).
+                </li>
+                <li>
+                    Use <code>SetPosition</code> to set it's position to the <code>LatLng</code> you created.
+                </li>
+                <li>
+                    Use the <code>SetTitle</code> and <code>SetSnippet</code> methods to set a title and description on it&mdash;this exercise will set it to "Current Position" and "This is where you are now", but feel free to set it to whatever you prefer.
+                </li>
+            </ul>
+        </li>
+    </ol>
+
+<p><a href="#" onclick="toggleCode(this,'marker');return false;" class="uiitem">Show Code</a>
+<div class="indent-none" id="marker" style="display:none;">
+<pre class="prettyprint">
+public class MainActivity : Activity, IOnMapReadyCallback, <mark>ILocationListener</mark> {
+    ...
+    <mark>Marker currentLocationMarker;</mark>
+    ...
+
+    <mark>public void OnLocationChanged(Location location) {</mark>
+    <mark>    LatLng coord = new LatLng(location.Latitude, location.Longitude);</mark>
+    <mark>    CameraUpdate update = CameraUpdateFactory.NewLatLngZoom(coord, 17);</mark>
+    <mark>    map.AnimateCamera(update);</mark>
+
+    <mark>    if (currentLocationMarker != null) {</mark>
+    <mark>        currentLocationMarker.Position = coord;</mark>
+    <mark>    }</mark>
+    <mark>    else {</mark>
+    <mark>        var markerOptions = new MarkerOptions()</mark>
+    <mark>            .SetIcon(BitmapDescriptorFactory.DefaultMarker(BitmapDescriptorFactory.HueBlue))</mark>
+    <mark>            .SetPosition(coord)</mark>
+    <mark>            .SetTitle("Current Position")</mark>
+    <mark>            .SetSnippet("This is where you are now");</mark>
+    <mark>        currentLocationMarker = map.AddMarker(markerOptions);</mark>
+    <mark>    }</mark>
+    <mark>}</mark>
+}
+</pre></div>
+
+    <h2>Run the application</h2>
+    <p>
+        Finally, let's test our application changes.
+    </p>
+    <ol>
+        <li>
+            Run the application on an emulator that supports location changes. You can also use a physical device, but it's harder to see changes because you likely won't be able to move very far to trigger the change.
+        </li>
+
+        <li>
+            The app should launch and display your current location, or the last known location to the emulator.
+        </li>
+
+        <li>
+            If you're using a Google Android Virtual Device, you can change the location using the <b>Extended Controls</b> dialog which can be reaching by clicking the bottom entry on the side menu bar; the <b>...</b> button.
+        </li>
+
+        <img style="width: 600px; max-width: 100%;" src="./res/images/lab2-vs-location.png" />
+    </ol>
+
+    <!-- - - - - - - - - Summary - - - - - - - - -->
+
+    <h1>Summary</h1>
+    <p>
+        In this exercise, you added support to manage the current location and display the position on a map.  
+    </p>
+
+    <div class="align-right">
+        <a href="../Start%20Here.html">Go Back</a>
+    </div>
+
+    </section>
+
+    <script src="./res/js/jquery.min.js"></script>
+    <script src="./res/js/prettify.js"></script>
+    <script src="./res/js/script.js"></script>
+
+    <footer>Copyright (C) 2018 Xamarin Inc., Microsoft.</footer>
+</body>
+</html>

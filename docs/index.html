@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+    <title>Location Services</title>
+    <link rel="stylesheet" type="text/css" href="./parts/res/styles/normalize.css">
+    <link rel="stylesheet" type="text/css" href="./parts/res/styles/prettify.css">
+    <link rel="stylesheet" type="text/css" href="./parts/res/styles/styles.css">
+</head>
+
+<body>
+    <!-- This will be filled in at runtime -->
+    <header role="course-title"></header>
+
+    <section id="main">
+
+    <h2>Before you begin</h2>
+    <p>
+    This is an Android class which will require a Xamarin.Android development environment to complete the coding exercises. Please read the <a href="https://university.xamarin.com/resources/setup-requirements">setup requirements</a> if you need help installing the Xamarin development environment.
+    </p>
+    <p>
+    In addition, you will need to install the optional Google Play services SDK library from the Android SDK Manager and get an Android emulator with Google Play services installed, or (preferably) a device to run the exercise on.
+    </p>
+
+<p>
+<a href="#" onclick="toggleBlock(this, 'installGoogleApps', 'How do I setup Google Play services?', 'Hide'); return false;" class="uiitem">How do I setup Google Play services?</a>
+<div class="indent-none wsblock" id="installGoogleApps" style="display:none;">
+    <!-- Each item is in a div "wsitem" -->
+    <div class="wsitem">
+    <b>Testing with Google's pre-built Android image</b>
+    <p>
+        The easiest method to make sure Google Play services is available is to download a Google emulator image with the appropriate APIs already available (remember to use x86 for performance). Using the Android SDK Manager (<strong>Tools</strong> > <strong>SDK Manager</strong> in Visual Studio for Mac, <strong>Tools</strong> > <strong>Android</strong> > <strong>Android SDK Manager...</strong> on Windows), download one of the "Google APIs" or "Google Play" emulator images.
+    </p>
+
+    <p>
+        With the image downloaded, create a new emulator using that image with the Android Emulator Manager (<strong>Tools</strong> > <strong>Google Emulator Manager</strong> in Visual Studio for Mac, <strong>Tools</strong> > <strong>Android</strong> > <strong>Android Emulator Manager</strong> in Visual Studio on Windows).
+    </p>
+
+    <p>
+        Now when you deploy to an emulator, choose the emulator with Google APIs loaded, and Google Maps APIs will work in your emulator. If you choose an emulator or device without the Play services APIs, it will display an error message.
+    </p>
+    </div>
+</div>
+</p>
+
+    <h2>Overview</h2>
+    <p>
+      In this course, we will continue our discussion of using Google Maps in Android applications by adding in the ability to work with the current location and search for points of interest around us. We will then annotate the map with markers and shapes to draw special features related to the things in our area. 
+    </p>
+
+    <div class="hintblock">
+      It is assumed that you have already taken the <a href="https://university.xamarin.com/classes/and230-googlemaps">AND230 - Google Maps</a> class prior to attending this one. If not, you should register for that class first as it has a lot of prerequisite knowledge.
+    </div>
+
+    <h2>Objectives</h2>
+      <ol>
+        <li>Determine the current location</li>
+        <li>Search for points of interest around the device</li>
+      </ol>
+
+      <h2>Lecture</h2>
+      <p><a href="./parts/slides.pdf">AND231 - Location Services</a></p>
+
+      <h2>Exercises</h2>
+      <p>
+          Exercise materials are available from <a href="https://github.com/XamarinUniversity/AND231/">GitHub</a>. The code can be cloned through a desktop Git client or <a href="https://github.com/XamarinUniversity/AND231/archive/master.zip">downloaded directly</a> as a ZIP file.
+      </p>
+      <ol>
+        <li>
+          <div class="objective">Setup the Google Maps API key</div>
+          <a href="./parts/part1.html">Exercise</a>
+          <br />
+          In this group exercise, we will add your Google API key to the starting application and ensure that the mapping support is all working.
+        </li>
+
+        <li>
+          <div class="objective">Working with the Location Manager</div>
+          <a href="./parts/part2.html">Exercise</a>
+          <br />
+          This exercise will explore the <code>LocationManager</code> service and how to identify your current location and watch it change.
+        </li>
+
+        <li>
+          <div class="objective">Identifying a provider based on criteria</div>
+          <a href="./parts/part3.html">Exercise</a>
+          <br />
+          Here we will modify our location registration code to ask Android which provider we should use by providing some crtieria.
+        </li>
+
+        <li>
+          <div class="objective">Adding support for Location Services</div>
+          <a href="./parts/part4.html">Exercise</a>
+          <br />
+          Next, in this group exercise we will look at integrating the <code>LocationServices</code> support included with Google Play and how to fall back on <code>LocationManager</code> when it's not available.
+        </li>
+
+        <li>
+          <div class="objective">Using Geocoder to perform reverse geocoding</div>
+          <a href="./parts/part5.html">Exercise</a>
+          <br />
+          In this exercise you will look up a street address from a specific coordinate on our map using the <code>Geocoder</code> class.
+        </li>
+
+        <li>
+          <div class="objective">Using Geocoder to find a specific address</div>
+          <a href="./parts/part6.html">Exercise</a>
+          <br />
+          In this final exercise you will find a known address on the map using the <code>Geocoder</code> class.
+        </li>
+    </ol>
+
+    <!-- This section is for additional links and examples that are relevant to the material in this course -->
+    <h2>Additional resources</h2>
+
+    <h3>Related Lightning Lectures</h3>
+    <div class="wslist">
+        <a href="https://university.xamarin.com/lightninglectures">Drawing Shapes on Google Maps in Android</a>
+    </div>
+    
+    <h3>Further Reading</h3>
+    <div class="wslist">
+        <a target="_blank" href="https://developer.android.com/training/location/index.html">Making your app location-aware</a>
+        <a target="_blank" href="http://developer.android.com/google/play-services/location.html">Locations &amp; Places (Google Play services)</a>        
+        <a target="_blank" href="http://developer.xamarin.com/guides/android/platform_features/maps_and_location/location/">Location Services in Android (Xamarin)</a>
+        <a target="_blank" href="https://developer.xamarin.com/samples/monodroid/Location/">Android Location Services Sample (Xamarin)</a>
+    </div>
+
+    </section>
+
+    <script src="./parts/res/js/jquery.min.js"></script>
+    <script src="./parts/res/js/prettify.js"></script>
+    <script src="./parts/res/js/script.js"></script>
+
+    <footer>Copyright (C) 2018 Xamarin Inc., Microsoft.<br><a target="_blank" href="http://university.xamarin.com">Visit Xamarin University for more classes and content</a></footer>
+</body>
+</html>
+

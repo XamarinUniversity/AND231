@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+    <title>Exercise 1: Setup the Google Maps API key</title>
+    <link rel="stylesheet" type="text/css" href="./res/styles/normalize.css">
+    <link rel="stylesheet" type="text/css" href="./res/styles/prettify.css" />
+    <link rel="stylesheet" type="text/css" href="./res/styles/styles.css">
+</head>
+
+<body>
+    <!-- Use the same title as the StartHere -->
+    <header>Location Services</header>
+
+    <section id="main">
+        <h1 id="page-title"></h1>
+
+        <h2>Duration</h2>
+
+        <p>5-10 minutes</p>
+
+        <!-- - - - - - - - - Goals - - - - - - - - -->
+        <h2 id="goals">Exercise goals</h2>
+
+        <p>
+            In this group exercise, you will register for a Maps API key with Google, which you need in order to use the Google Maps functionality in Android. We will then add that registered key into our starter application for use with the rest of the exercises.
+        </p>
+
+        <div class="hintblock">
+            <b>Note:</b> It is assumed that you have already downloaded and configured a Google APIs or Google Play emulator or device. If not, please refer to the <a href="../Start%20Here.html#installGoogleApps">development and testing environment setup instructions</a> before you begin this exercise.
+        </div>
+
+        <p>
+            To complete this exercise, you will perform the following steps:
+        </p>
+
+        <ol>
+            <li>
+                Retrieve the SHA1 fingerprint of the keystore that is used to sign the application.
+            </li>
+            <li>
+                Create a project in the Google APIs console.
+            </li>
+            <li>
+                Obtain the API key.
+            </li>
+            <li>
+                Set the Google API key information into the application.
+            </li>
+        </ol>
+
+        <div class="hintblock">
+            If you still have an application registered in your Google API console from <b>AND230 - Maps in Android</b>, then you can use that key as long as the Android package id is registered. You can either add this application's package id (<code>com.xamarin.droidmapping</code>) or update it in the Android Application settings to match what you have registered. Then, set the API key into the <b>GoogleMapsKey.cs</b> source file for the debug build.
+        </div>
+
+        <h2>Required Assets</h2>
+
+        <p>
+            There is a <b>Exercise 1</b> folder included with this exercise which contains the starter project you will add your Google API key into. Copy this into an editable location, you will continue with this project throughout the class.
+        </p>
+        <!-- - - - - - - - - Steps - - - - - - - - -->
+
+        <h1 id="steps">Steps</h1>
+
+        <p>
+            This is a group exercise, intended to be done in a live class, if you are working through this on your own, you can use the step-by-step instructions below. You can also utilize the high-level goals defined above to work through the code, relying on the below instructions to fill in any necessary details.
+        </p>
+
+        <h2>Retrieve the SHA1 fingerprint of the keystore</h2>
+        <p>
+            First, we are going to get the SH1 fingerprint from our debug keystore used to sign all debug applications. We will need to register this fingerprint with the Google API console in order to identify our apps and access the mapping services.
+        </p>
+
+        <p>
+          To request a Maps API key from Google, you need to know the SHA1 fingerprint of the keystore that is used to sign the application. This means that you will have to determine the SHA1 fingerprint for the debug keystore, and then the SHA1 fingerprint for the release keystore that is used to sign your application for publication. By default the keystore that is used to sign debug versions of a Xamarin.Android application can be found at the following locations:
+        </p>
+
+<pre class="hintblock">
+<b>Windows</b><br/><code>C:\Users\[USERNAME]\AppData\Local\Xamarin\Mono for Android\debug.keystore</code>
+<b>macOS</b><br /><code>/Users/[USERNAME]/.local/share/Xamarin/Mono for Android/debug.keystore</code>
+</pre>
+         <ol>
+            <li>
+                Locate the Java <code>bin</code> directory. You will need the information about the keystore by running the <code class="codeblock">keytool</code> command from the JDK. This tools is normally found in the following locations:
+            </li>
+
+<pre class="hintblock">
+<b>Windows</b><br/><code>C:\Program Files (x86)\Java\jdk[VERSION]\bin\keytool.exe</code>
+<b>macOS</b><br /><code>/System/Library/Java/JavaVirtualMachines/[VERSION].jdk/Contents/Home/bin/keytool</code>
+</pre>
+
+            <li>
+                Run the <code>keytool</code> application from the command line using the following parameters:
+
+<pre class="codeblock">
+keytool -list -v -keystore [STORE FILENAME] -storepass [STORE PASSWORD] 
+        -keypass [KEY PASSWORD]
+</pre>
+
+                Here is an example for macOS:
+
+<pre class="codeblock">
+keytool -list -v -keystore ~/.local/share/Xamarin/Mono\ for\ Android/debug.keystore 
+        -storepass android -keypass android
+</pre>
+            </li>
+
+            <li>
+            You will see something like the following output to your console window:
+
+<pre class="codeblock" style="background-color:black; color:white;">
+Keystore type: JKS
+Keystore provider: SUN
+
+Your keystore contains 1 entry
+
+Alias name: androiddebugkey
+Creation date: Nov 21, 2013
+Entry type: PrivateKeyEntry
+Certificate chain length: 1
+Certificate[1]:
+Owner: CN=Android Debug, O=Android, C=US
+Issuer: CN=Android Debug, O=Android, C=US
+Serial number: 528e619d
+Valid from: Thu Nov 21 13:40:13 CST 2013 until: Tue Feb 17 13:40:13 CST 2043
+Certificate fingerprints:
+   MD5:  33:37:EB:AB:58:21:2F:0C:84:89:2B:E0:8E:51:D3:95
+   SHA1: <span class="highlight" style="color:red;">2F:5B:C7:6D:F6:8E:87:69:1A:62:44:14:59:4B:9F:4F:3B:EE:35:E9</span>
+   Signature algorithm name: SHA1withRSA
+   Version: 3
+</pre>            
+
+            You will need the SHA1 fingerprint (highlighted above). Copy and save it somewhere.
+            </li>
+          </ol>
+
+        <h2>Creating an API Project</h2>
+
+        <p>
+            Once you have the SHA1 fingerprint of the signing keystores, we need to create a new project in the Google APIs console or add the Google Maps API service to an existing project.
+        </p>
+
+        <ol>
+            <li>
+                In the browser, navigate to the <a href="https://console.developers.google.com/project">Google Developers Console</a>. You must either create a new project, or select an existing project you already have defined in the Google console. The instructions below will assume you are creating a new project.
+            </li>
+
+            <li>
+                The project name you select must be unique. If it is not unique, then Google will make it unique by adding numbers as you can see in the screenshot below (DroidMapping is not unique enough!) 
+            </li>
+
+        <div class="hintblock">
+        The Google API project name is <em>not</em> the same as your application name or package identifier; this is a name used to identify the project to Google and is not exposed to the user. You can even reuse the same Google API project across your Android apps&mdash;multiple SHA1 keys can be associated to a single API registration.
+        </div>            
+
+            <li>
+                Once the project is created (or selected), click on the API tab in the left navigation bar. A list of all services that are available to a project will display.
+            </li>
+
+            <li>
+                Locate the Google Maps section and select Google Maps Android API.
+            </li>
+
+            <li>
+                Turn the service on for this project.
+            </li>
+
+            <li>
+                Once you turn the service on, it might display the terms of service. If it does, accept them and dismiss the dialog. At this point the API project has been created and Google Maps Android API has been added to it. Next, we will look at how to create an API key and authorize a Xamarin.Android application so that it is able to use this feature.
+            </li>
+        </ol>
+
+        <h2>Obtaining the API Key</h2>
+
+        <p>
+            Once the Console API project has been created, it is necessary to create an Android API key. Xamarin.Android applications require the API key before they are granted access to the Android Map API. Without this, the map display will always be empty.
+        </p>
+
+        <ol>
+            <li>
+                Navigate to the Console API, and click on the Credentials link under APIs in the sidebar. In the presented screen, use the <b>Add Credentials > API key</b> to start creating the key.
+            </li>
+
+            <li>
+                In the Create a new key window popup, click on the Android key button.
+            </li>
+
+            <li>
+                Next, we need to authorize an application to use with this API key. In the window popup, enter a name for the key; multiple apps can share a key, so use a name that represents the access and services you are authorizing with this key.
+            </li>
+            <li>
+                Next, click the "+" button to add the package and fingerprint. In the shown boxes, enter the package name of your application. Use <b>com.xamarin.droidmapping</b> as the package name (or pick your own, just make sure you set the package name in the starter app later!). Then enter the SHA1 fingerprint you got in the last exercise. 
+            </li>
+
+            <li>
+                Click the Create button, which will display the API key and then return you to the Credentials screen that displays the API key and the Android apps that are authorized to use the API key.
+            </li>
+
+        </ol>
+
+        <h2>Open the starter Android application</h2>
+        <p>
+            Next, we need to open the starter mapping application and add the API key into it.
+        </p>
+
+        <ol>
+            <li>
+                Open the <b>DroidMapping</b> application found in the start folder in <b>Exercise 1</b>.
+            </li>
+
+            <li>
+                Open the <b>AndroidManifest.xml</b> file&mdash;either directly, or through the project properties.
+            </li>
+
+
+            <li>
+                Verify that the package name listed matches the registered package name you used when creating the API key&mdash;we suggested <code>com.xamarin.droidmapping</code>.
+            </li>
+
+            <li>
+                Next, add the API key into the application. This is a piece of <em>metadata</em> which can either be added into the <b>AndroidManifest.xml</b> by editing it in source view, or in code through an assembly-level <code>MetaDataAttribute</code>. This latter approach is what we will use because it allows us to change the value depending on the release or debug build.
+            </li>
+
+            <li>
+                Open the <b>GoogleMapsKey.cs</b> source file.
+            </li>
+
+            <li>
+                Replace the placeholder strings with your API key value you copied from the Google Developer Console. You can just replace the debug version, just make sure you only build and run debug builds!
+            </li>
+
+<pre class="prettyprint codeblock">
+using Android.App;
+
+#if RELEASE
+[assembly: MetaDataAttribute("com.google.android.maps.geo.API_KEY", Value="release_key_goes_here")]
+#else
+[assembly: MetaDataAttribute("com.google.android.maps.geo.API_KEY", <span class="highlight">Value="debug_key_goes_here")</span>]
+#endif
+</pre>
+
+            <li>
+                Build and run the application&mdash;it should display a Google Maps, if you see gray, empty tiles then check the console log output, this behavior normally means the API key is not present or that the package id is not registered for the given API key.
+            </li>
+        </ol>
+
+        <!-- - - - - - - - - Summary - - - - - - - - -->
+
+        <h1>Summary</h1>
+
+        <p>Congratulations! We have successfully setup our application to use Google Maps and are ready to add some location support into it!</p>
+
+        <div class="align-right">
+            <a href="../Start%20Here.html">Go Back</a>
+        </div>
+
+        <ol></ol>
+    </section>
+
+    <script src="./res/js/jquery.min.js"></script>
+    <script src="./res/js/prettify.js"></script>
+    <script src="./res/js/script.js"></script>
+
+    <footer>Copyright (C) 2018 Xamarin Inc., Microsoft.</footer>
+</body>
+</html>
